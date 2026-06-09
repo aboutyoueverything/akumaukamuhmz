@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bantu Beruang Ulang Tahun! 🐻🍓</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Container Utama */
+        .game-container {
+            width: 350px;
+            height: 520px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #fb6f92;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Layar Awal & Layar Menang */
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            text-align: center;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        .screen h1 { color: #ff477e; margin: 0 0 10px 0; font-size: 1.7rem; }
+        .screen p { color: #6c757d; font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+
+        /* Tombol Utama */
+        .btn-main {
+            background: #fb6f92;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(251, 111, 146, 0.4);
+            z-index: 40;
+            display: block;
+        }
+
+        /* Papan Skor */
+        .score-board {
+            position: absolute;
+            top: 15px; left: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ff477e;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 2px solid #fb6f92;
+            z-index: 10;
+        }
+
+        /* Karakter Beruang */
+        #bear {
+            width: 70px;
+            height: 65px;
+            background: #b5835a;
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            bottom: 80px;
+            left: 140px;
+            transition: left 0.1s ease-out;
+        }
+        #bear::before, #bear::after {
+            content: ''; position: absolute;
+            width: 20px; height: 20px;
+            background: #b5835a; border-radius: 50%; top: -6px;
+        }
+        #bear::before { left: 2px; }
+        #bear::after { right: 2px; }
+        .snout {
+            width: 24px; height: 18px; background: #fff;
+            border-radius: 50%; position: absolute; bottom: 8px; left: 23px;
+        }
+        .eye {
+            width: 6px; height: 6px; background: #333;
+            border-radius: 50%; position: absolute; top: 25px;
+        }
+        .eye.left { left: 20px; }
+        .eye.right { right: 20px; }
+
+        /* Item Jatuh (Stroberi) */
+        #strawberry {
+            font-size: 30px;
+            position: absolute;
+            top: -50px;
+            left: 160px;
+            z-index: 5;
+        }
+
+        /* KONTROL TOMBOL HP BARU (Lebih Besar & Responsif) */
+        .controls {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            height: 70px;
+            display: flex;
+            background: #ffe5ec;
+            border-top: 3px solid #fb6f92;
+            z-index: 20;
+        }
+        .control-btn {
+            flex: 1; border: none; background: transparent;
+            font-size: 1.3rem; color: #ff477e; cursor: pointer;
+            font-weight: bold;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .control-btn:active { background: #ffc2d1; }
+        .divider { width: 3px; background: #fb6f92; }
+
+        .hidden { display: none !important; }
+        
+        /* Efek Hujan Pesta */
+        .confetti {
+            position: absolute; width: 8px; height: 15px;
+            animation: drop 3s linear infinite;
+        }
+        @keyframes drop {
+            0% { top: -20px; transform: rotate(0deg); }
+            100% { top: 100%; transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="score-board">Skor: <span id="score">0</span> / 10</div>
+
+        <div class="screen" id="startScreen">
+            <h1>Bantu si Beruang! 🐻</h1>
+            <p>Beruang kelaparan di hari ulang tahunnya. Tangkap 10 stroberi jatuh untuk membuka kejutan spesial!</p>
+            <button class="btn-main" id="startBtn">Mulai Main 🎮</button>
+        </div>
+
+        <div class="screen hidden" id="winScreen">
+            <h1>Happy Birthday! 🐻🎉</h1>
+            <p style="font-weight: bold; color: #ff477e; font-size: 1.2rem; margin: 5px 0;">Kamu Menang! 🍓✨</p>
+            <p>Selamat ulang tahun! Makasih ya sudah bantuin beruangnya kenyang. Semoga di usia yang baru ini, harimu selalu dipenuhi kebahagiaan, rezeki melimpah, dan cita-citamu terkabul semua! Teruslah jadi orang yang luar biasa! 🎂💝</p>
+            <button class="btn-main" id="resetBtn">Main Lagi 🔄</button>
+        </div>
+
+        <div id="strawberry">🍓</div>
+        <div id="bear">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="snout"></div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" id="btnLeft">◀ KIRI</button>
+            <div class="divider"></div>
+            <button class="control-btn" id="btnRight">KANAN ▶</button>
+        </div>
+    </div>
+
+    <script>
+        const bear = document.getElementById('bear');
+        const strawberry = document.getElementById('strawberry');
+        const scoreDisplay = document.getElementById('score');
+        const startScreen = document.getElementById('startScreen');
+        const winScreen = document.getElementById('winScreen');
+        
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+
+        let score = 0;
+        let gameActive = false;
+        let bearX = 140; 
+        let strawX = 160;
+        let strawY = -50;
+        let fallSpeed = 4;
+
+        // Event Listener khusus HP agar klik langsung terdeteksi cepat
+        startBtn.addEventListener('click', startGame);
+        startBtn.addEventListener('touchstart', function(e) { e.preventDefault(); startGame(); });
+        
+        resetBtn.addEventListener('click', resetGame);
+        resetBtn.addEventListener('touchstart', function(e) { e.preventDefault(); resetGame(); });
+
+        btnLeft.addEventListener('click', () => moveBear(-35));
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); moveBear(-35); });
+
+        btnRight.addEventListener('click', () => moveBear(35));
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); moveBear(35); });
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            winScreen.classList.add('hidden');
+            score = 0;
+            scoreDisplay.innerText = score;
+            bearX = 140;
+            bear.style.left = bearX + 'px';
+            resetStrawberry();
+            gameActive = true;
+            updateGame();
+        }
+
+        function moveBear(offset) {
+            if (!gameActive) return;
+            bearX += offset;
+            if (bearX < 0) bearX = 0;
+            if (bearX > 276) bearX = 276; // Batas kanan wadah
+            bear.style.left = bearX + 'px';
+        }
+
+        function resetStrawberry() {
+            strawX = Math.floor(Math.random() * 290);
+            strawY = -50;
+            strawberry.style.left = strawX + 'px';
+        }
+
+        function updateGame() {
+            if (!gameActive) return;
+
+            strawY += fallSpeed;
+            strawberry.style.top = strawY + 'px';
+
+            // Jika stroberi jatuh ke bawah melewati batas
+            if (strawY > 440) {
+                resetStrawberry();
+            }
+
+            // Deteksi Tabrakan
+            if (strawY >= 360 && strawY <= 400) {
+                if (strawX + 25 >= bearX && strawX <= bearX + 70) {
+                    score++;
+                    scoreDisplay.innerText = score;
+                    resetStrawberry();
+
+                    if (score >= 10) {
+                        endGame();
+                        return;
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                requestAnimationFrame(updateGame);
+            }, 1000 / 60); // Mengunci di 60 FPS agar lancar di HP
+        }
+
+        function endGame() {
+            gameActive = false;
+            winScreen.classList.remove('hidden');
+            buatKonfeti();
+        }
+
+        function resetGame() {
+            // Hapus kertas pesta lama
+            const oldConfetti = winScreen.querySelectorAll('.confetti');
+            oldConfetti.forEach(c => c.remove());
+            startGame();
+        }
+
+        function buatKonfeti() {
+            for(let i=0; i<25; i++) {
+                let c = document.createElement('div');
+                c.classList.add('confetti');
+                c.style.left = Math.random() * 90 + '%';
+                c.style.backgroundColor = ['#ff477e','#ffb3c1','#ffd166','#06d6a0'][Math.floor(Math.random()*4)];
+                c.style.animationDelay = Math.random() * 1.5 + 's';
+                winScreen.appendChild(c);
+            }
+        }
+    </script>
+</body>
+</html>
