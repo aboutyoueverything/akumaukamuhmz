@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bantu Beruang Ulang Tahun! 🐻🍓</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Container Utama */
+        .game-container {
+            width: 360px;
+            height: 550px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid #fb6f92;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Layar Awal & Layar Menang */
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .screen h1 { color: #ff477e; margin-bottom: 10px; font-size: 1.8rem; }
+        .screen p { color: #6c757d; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
+
+        .btn {
+            background: #fb6f92;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(251, 111, 146, 0.4);
+            transition: 0.2s;
+        }
+        .btn:hover { background: #ff477e; transform: scale(1.05); }
+
+        /* Papan Skor */
+        .score-board {
+            position: absolute;
+            top: 15px; left: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ff477e;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 2px solid #fb6f92;
+            z-index: 10;
+        }
+
+        /* Karakter Beruang (Bisa Digeser) */
+        #bear {
+            width: 70px;
+            height: 65px;
+            background: #b5835a;
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            bottom: 40px;
+            left: 145px; /* Tengah awal */
+            touch-action: none;
+            cursor: grab;
+        }
+        #bear::before, #bear::after {
+            content: ''; position: absolute;
+            width: 20px; height: 20px;
+            background: #b5835a; border-radius: 50%; top: -6px;
+        }
+        #bear::before { left: 2px; }
+        #bear::after { right: 2px; }
+        .snout {
+            width: 24px; height: 18px; background: #fff;
+            border-radius: 50%; position: absolute; bottom: 8px; left: 23px;
+        }
+        .eye {
+            width: 6px; height: 6px; background: #333;
+            border-radius: 50%; position: absolute; top: 25px;
+        }
+        .eye.left { left: 20px; }
+        .eye.right { right: 20px; }
+
+        /* Item Jatuh (Stroberi) */
+        #strawberry {
+            font-size: 28px;
+            position: absolute;
+            top: -40px;
+            left: 160px;
+        }
+
+        /* Kontrol Tombol HP di Bawah */
+        .controls {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            height: 40px;
+            display: flex;
+            background: #ffe5ec;
+            border-top: 2px solid #fb6f92;
+        }
+        .control-btn {
+            flex: 1; border: none; background: transparent;
+            font-size: 1.2rem; color: #ff477e; cursor: pointer;
+            font-weight: bold;
+        }
+        .control-btn:active { background: #ffc2d1; }
+
+        /* Sembunyikan Elemen */
+        .hidden { display: none !important; }
+        
+        /* Efek Hujan Konfeti saat Menang */
+        .confetti {
+            position: absolute; width: 8px; height: 8px;
+            background: #ff477e; animation: drop 3s linear infinite;
+        }
+        @keyframes drop {
+            0% { top: -10px; transform: rotate(0deg); }
+            100% { top: 100%; transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="score-board">Skor: <span id="score">0</span> / 10</div>
+
+        <div class="screen" id="startScreen">
+            <h1>Bantu si Beruang! 🐻</h1>
+            <p>Beruang kelaparan di hari ulang tahunnya. Tangkap 10 stroberi jatuh untuk membuka hadiah kejutan spesial!</p>
+            <button class="btn" onclick="startGame()">Mulai Main 🎮</button>
+        </div>
+
+        <div class="screen hidden" id="winScreen">
+            <h1>Happy Birthday! 🐻🎉</h1>
+            <p style="font-weight: bold; color: #ff477e;">Kamu Menang! 🍓✨</p>
+            <p>Selamat ulang tahun! Makasih ya sudah bantuin beruangnya kenyang. Semoga di usia yang baru ini, harimu selalu dipenuhi kebahagiaan, rezeki melimpah, dan cita-citamu terkabul semua! Teruslah jadi orang yang luar biasa! 🎂💝</p>
+            <button class="btn" onclick="resetGame()">Main Lagi 🔄</button>
+        </div>
+
+        <div id="strawberry">🍓</div>
+        <div id="bear">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="snout"></div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="moveBear(-25)">◀ Kiri</button>
+            <button class="control-btn" onclick="moveBear(25)">Kanan ▶</button>
+        </div>
+    </div>
+
+    <script>
+        const bear = document.getElementById('bear');
+        const strawberry = document.getElementById('strawberry');
+        const scoreDisplay = document.getElementById('score');
+        const startScreen = document.getElementById('startScreen');
+        const winScreen = document.getElementById('winScreen');
+
+        let score = 0;
+        let gameActive = false;
+        let bearX = 145; 
+        let strawX = 160;
+        let strawY = -40;
+        let fallSpeed = 3;
+
+        // Memulai Game
+        function startGame() {
+            startScreen.classList.add('hidden');
+            winScreen.classList.add('hidden');
+            score = 0;
+            scoreDisplay.innerText = score;
+            strawY = -40;
+            resetStrawberry();
+            gameActive = true;
+            requestAnimationFrame(updateGame);
+        }
+
+        // Menggerakkan Beruang via Tombol
+        function moveBear(offset) {
+            if (!gameActive) return;
+            bearX += offset;
+            if (bearX < 0) bearX = 0;
+            if (bearX > 290) bearX = 290; // Batas kanan container (360 - 70)
+            bear.style.left = bearX + 'px';
+        }
+
+        // Posisi Acak Stroberi Baru
+        function resetStrawberry() {
+            strawX = Math.floor(Math.random() * 320); // acak dari 0 - 320
+            strawY = -40;
+            strawberry.style.left = strawX + 'px';
+        }
+
+        // Loop Game Utama
+        function updateGame() {
+            if (!gameActive) return;
+
+            // Stroberi jatuh ke bawah
+            strawY += fallSpeed;
+            strawberry.style.top = strawY + 'px';
+
+            // Jika stroberi lewat batas bawah game tanpa tertangkap
+            if (strawY > 510) {
+                resetStrawberry();
+            }
+
+            // Deteksi Tabrakan (Tertangkap Beruang)
+            // Cek jika posisi vertikal stroberi sejajar dengan mulut beruang
+            if (strawY >= 445 && strawY <= 485) {
+                // Cek koordinat horizontal beruang vs stroberi
+                if (strawX + 25 >= bearX && strawX <= bearX + 70) {
+                    score++;
+                    scoreDisplay.innerText = score;
+                    resetStrawberry();
+
+                    // Cek jika menang
+                    if (score >= 10) {
+                        endGame();
+                        return;
+                    }
+                }
+            }
+
+            requestAnimationFrame(updateGame);
+        }
+
+        // Game Selesai dan Menang
+        function endGame() {
+            gameActive = false;
+            winScreen.classList.remove('hidden');
+            buatKonfeti();
+        }
+
+        function resetGame() {
+            startGame();
+        }
+
+        // Efek Hujan Kertas Pesta saat Menang
+        function buatKonfeti() {
+            for(let i=0; i<30; i++) {
+                let c = document.createElement('div');
+                c.classList.add('confetti');
+                c.style.left = Math.random() * 100 + '%';
+                c.style.backgroundColor = ['#ff477e','#ffb3c1','#ffd166','#06d6a0'][Math.floor(Math.random()*4)];
+                c.style.animationDelay = Math.random() * 2
