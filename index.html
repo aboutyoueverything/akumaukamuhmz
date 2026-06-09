@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🐻🎂</title>
+    <style>
+        /* Desain Background & Tema */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Kartu Ucapan */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            z-index: 10;
+            border: 5px solid #fb6f92;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Animasi Kartu Mengapung */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Desain Karakter Beruang (CSS Art) */
+        .bear-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .bear {
+            width: 100px;
+            height: 90px;
+            background: #b5835a;
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .bear::before, .bear::after { /* Telinga */
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #b5835a;
+            border-radius: 50%;
+            top: -10px;
+        }
+        .bear::before { left: 5px; }
+        .bear::after { right: 5px; }
+
+        .snout {
+            width: 35px;
+            height: 25px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 15px;
+            left: 32px;
+        }
+
+        .eyes {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 35px;
+        }
+        .eye-left { left: 30px; }
+        .eye-right { right: 30px; }
+
+        .blush {
+            width: 12px;
+            height: 8px;
+            background: #ff8fa3;
+            border-radius: 50%;
+            position: absolute;
+            top: 45px;
+        }
+        .blush-left { left: 15px; }
+        .blush-right { right: 15px; }
+
+        /* Teks Ucapan */
+        h1 {
+            color: #ff477e;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #6c757d;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Tombol Interaktif */
+        .btn {
+            background-color: #fb6f92;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: #ff477e;
+            transform: scale(1.05);
+        }
+
+        /* Elemen Balon Jatuh */
+        .balloon {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            bottom: -100px;
+            padding: 5px;
+            animation: fly up 5s linear infinite;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        @keyframes fly {
+            0% { bottom: -100px; transform: translateX(0); }
+            50% { transform: translateX(50px); }
+            100% { bottom: 105vh; transform: translateX(-50px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="bear-container">
+            <div class="bear">
+                <div class="eyes eye-left"></div>
+                <div class="eyes eye-right"></div>
+                <div class="blush blush-left"></div>
+                <div class="blush blush-right"></div>
+                <div class="snout"></div>
+            </div>
+        </div>
+
+        <h1>Happy Birthday! 🐻🎉</h1>
+        <p>Selamat ulang tahun! Semoga harimu dipenuhi dengan kebahagiaan, tawa, dan banyak pelukan hangat selembut beruang! Tetap jadi orang yang luar biasa ya! 🎂✨</p>
+        
+        <button class="btn" onclick="tambahBalon()">Klik Kejutan! 🎈</button>
+    </div>
+
+    <script>
+        // Efek interaktif memunculkan balon/efek pesta saat tombol diklik
+        function tambahBalon() {
+            const warna = ['#ff8fa3', '#ffb3c1', '#ffcad4', '#b5e2fa', '#edafb8'];
+            
+            for (let i = 0; i < 15; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                
+                // Atur posisi acak dan warna acak
+                balloon.style.backgroundColor = warna[Math.floor(Math.random() * warna.length)];
+                balloon.style.left = Math.random() * 100 + 'vw';
+                
+                // Atur durasi animasi acak agar terlihat alami
+                const durasi = (Math.random() * 3 + 2) + 's';
+                balloon.style.animation = `fly ${durasi} linear forwards`;
+                
+                document.body.appendChild(balloon);
+                
+                // Hapus elemen setelah animasi selesai agar tidak memberatkan browser
+                setTimeout(() => {
+                    balloon.remove();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
