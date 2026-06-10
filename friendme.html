@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship Quest ✨</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4a4a4a;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: #ff5c8a;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .clue {
+            background: #fff0f3;
+            padding: 12px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff758f;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffe5ec;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            border-color: #ff758f;
+        }
+
+        button {
+            background: #ff758f;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #ff4d6d;
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            color: #ff0f43;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* Styling Surat Akhir */
+        .letter {
+            text-align: left;
+            background: #fffafb;
+            border: 1px dashed #ffc2d1;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .letter p {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            color: #4a4a4a;
+        }
+
+        .heart {
+            font-size: 3rem;
+            color: #ff4d6d;
+            animation: beat 0.8s infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.1); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: WELCOME -->
+    <div id="screen-start" class="card">
+        <div style="font-size: 3rem; margin-bottom: 10px;">✨</div>
+        <h1>Friendship Quest</h1>
+        <p>Halo! Game kecil ini dibuat khusus untuk seseorang yang spesial. Kamu harus menyelesaikan 3 tantangan seru untuk membuka sebuah pesan rahasia.</p>
+        <button onclick="nextScreen('start', 'level1')">Mulai Game 🚀</button>
+    </div>
+
+    <!-- SCREEN 2: LEVEL 1 -->
+    <div id="screen-level1" class="card hidden">
+        <h1>🧩 Tantangan 1</h1>
+        <p>Yuk tebak kata penyemangat di bawah ini!</p>
+        <div class="clue">
+            "Aku adalah sebuah kata yang sering kamu butuhkan saat lelah. Huruf depanku 'S', huruf belakangku 'T'. Siapakah aku?"
+        </div>
+        <input type="text" id="ans1" placeholder="Petunjuk: 8 huruf">
+        <div id="err1" class="error-msg">Hmm, jawaban masih kurang tepat. Coba lagi yuk!</div>
+        <button onclick="checkLevel1()">Kirim Jawaban</button>
+    </div>
+
+    <!-- SCREEN 3: LEVEL 2 -->
+    <div id="screen-level2" class="card hidden">
+        <h1>🧠 Tantangan 2</h1>
+        <p>Asah logika angka dulu sebentar!</p>
+        <div class="clue">
+            "Jika persahabatan kita dimulai dari angka 1, lalu setiap hari kebaikanmu melipatgandakan angka itu (x10), dan hari ini kita tambahkan angka kesempurnaan (9). Berapakah hasilnya?"
+        </div>
+        <input type="number" id="ans2" placeholder="Tulis jawaban berupa angka">
+        <div id="err2" class="error-msg">Hitung pelan-pelan, kamu pasti bisa!</div>
+        <button onclick="checkLevel2()">Kirim Jawaban</button>
+    </div>
+
+    <!-- SCREEN 4: LEVEL 3 -->
+    <div id="screen-level3" class="card hidden">
+        <h1>🌟 Tantangan Kunci</h1>
+        <p>Satu langkah terakhir untuk membuka kotak rahasia!</p>
+        <div class="clue" style="text-align: center;">
+            Ketik kata <b>TEMAN</b> menggunakan huruf kapital semua.
+        </div>
+        <input type="text" id="ans3" placeholder="Ketik di sini...">
+        <div id="err3" class="error-msg">Pastikan huruf besar semua ya!</div>
+        <button onclick="checkLevel3()">Buka Kotak Rahasia 🔓</button>
+    </div>
+
+    <!-- SCREEN 5: FINAL REWARD -->
+    <div id="screen-final" class="card hidden">
+        <div class="heart">❤️</div>
+        <h1 style="color: #ff4d6d;">Selamat! 🎉</h1>
+        <p>Kamu berhasil menyelesaikan semua tantangan. Ini pesan tulus buat kamu:</p>
+        
+        <div id="secret-letter" class="letter">
+            <p>Hai...</p>
+            <p>✨ Terimakasih ya udah mau jadi temen aku yang baik.</p>
+            <p>✨ Terimakasih udah buat aku semangat.</p>
+            <p>✨ Terimakasih udah buat aku lebih baik dari sebelumnya.</p>
+            <p style="font-weight: bold; color: #ff4d6d; text-align: center; margin-top: 20px; font-size: 1.1rem;">
+                Jangan pernah asing ya?<br>Because u my best friend.
+            </p>
+            <p style="text-align: center; font-style: italic; color: #888; margin-top: 15px;">
+                Sehat-sehat selalu ya teman! ✨
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function nextScreen(current, next) {
+            document.getElementById('screen-' + current).classList.add('hidden');
+            document.getElementById('screen-' + next).classList.remove('hidden');
+        }
+
+        function checkLevel1() {
+            const ans = document.getElementById('ans1').value.trim().toLowerCase();
+            if (ans === 'semangat') {
+                nextScreen('level1', 'level2');
+            } else {
+                document.getElementById('err1').style.display = 'block';
+            }
+        }
+
+        function checkLevel2() {
+            const ans = document.getElementById('ans2').value.trim();
+            if (ans === '19') {
+                nextScreen('level2', 'level3');
+            } else {
+                document.getElementById('err2').style.display = 'block';
+            }
+        }
+
+        function checkLevel3() {
+            const ans = document.getElementById('ans3').value.trim();
+            if (ans === 'TEMAN') {
+                nextScreen('level3', 'final');
+                setTimeout(() => {
+                    const letter = document.getElementById('secret-letter');
+                    letter.style.display = 'block';
+                    setTimeout(() => { letter.style.opacity = '1'; }, 100);
+                }, 500);
+            } else {
+                document.getElementById('err3').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
