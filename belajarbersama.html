@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Quest by @lliiaa_ra</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #111827, #312e81);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 2px solid #4f46e5;
+            position: relative;
+        }
+
+        .insta-tag {
+            background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(220, 39, 67, 0.3);
+        }
+
+        h1 {
+            color: #818cf8;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        button.btn-main {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        button.btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* GAME ARENA & ADVENTURE MECHANIC */
+        #game-arena {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(to bottom, #1e1b4b, #312e81);
+            border-radius: 15px;
+            position: relative;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border: 2px solid #6366f1;
+        }
+
+        #game-world {
+            width: 1000px; /* Dunia game panjang agar bisa dijelajahi */
+            height: 100%;
+            position: relative;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #player {
+            width: 32px;
+            height: 45px;
+            background: #38bdf8;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            transition: left 0.1s linear;
+            box-shadow: 0 0 10px #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .box-quest {
+            width: 35px;
+            height: 35px;
+            background: #f59e0b;
+            border: 2px solid #fff;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1e293b;
+            box-shadow: 0 0 8px #f59e0b;
+            cursor: pointer;
+        }
+
+        .box-quest.cleared {
+            background: #10b981 !important;
+            box-shadow: 0 0 8px #10b981;
+            color: white;
+        }
+
+        #floor {
+            width: 1000px;
+            height: 20px;
+            background: #4f46e5;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* CONTROLS FOR MOBILE */
+        .mobile-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .ctrl-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            flex: 1;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .ctrl-btn:active { background: #475569; }
+
+        /* TIMER & QUIZ STYLING */
+        #timer-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: #ef4444;
+            transition: width 0.1s linear;
+        }
+
+        .option-btn {
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding-left: 20px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .option-btn:hover { background: #475569; border-color: #818cf8; }
+
+        .letter-box {
+            text-align: left;
+            background: #1e1b4b;
+            border: 2px dashed #818cf8;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+        .letter-box p { margin-bottom: 12px; color: #e2e8f0; font-size: 1rem; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: DEPAN -->
+    <div id="scr-start" class="card">
+        <div class="insta-tag">@lliiaa_ra</div>
+        <h1>Adventure Quest</h1>
+        <p>Jelajahi map, gerakkan karaktermu mendekati Kotak Angka (1-10) untuk memicu kuis. Setiap soal hanya memiliki durasi <b>5 detik</b>! Selesaikan semua untuk membuka pesan misteri.</p>
+        <button class="btn-main" onclick="startAdventure()">Mulai Petualangan 🏃‍♂️</button>
+    </div>
+
+    <!-- SCREEN 2: GAMEPLAY JALAN-JALAN -->
+    <div id="scr-map" class="card hidden">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span>Gunakan Tombol A/D atau Panah</span>
+            <span style="font-weight: bold; color: #f59e0b;">Progress: <span id="prog-txt">0</span>/10</span>
+        </div>
+        
+        <div id="game-arena">
+            <div id="game-world">
+                <div id="player">🚶‍♂️</div>
+                <!-- Kotak 1-10 akan digenerate otomatis via Javascript -->
+                <div id="floor"></div>
+            </div>
+        </div>
+
+        <!-- Tombol kontrol layar untuk HP -->
+        <div class="mobile-controls">
+            <button class="ctrl-btn" onmousedown="startMove(-15)" onmouseup="stopMove()" ontouchstart="startMove(-15)" ontouchend="stopMove()">◀ KIRI</button>
+            <button class="ctrl-btn" onmousedown="startMove(15)" onmouseup="stopMove()" ontouchstart="startMove(15)" ontouchend="stopMove()">KANAN ▶</button>
+        </div>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">Dekati kotak untuk berinteraksi secara otomatis</p>
+    </div>
+
+    <!-- SCREEN 3: INTERFACES KUIS -->
+    <div id="scr-quiz" class="card hidden">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #a5b4fc; margin-bottom: 5px;">
+            <span id="quiz-map-info">KOTAK</span>
+            <span>Waktu: <span id="timer-txt">5</span>s</span>
+        </div>
+        <div id="timer-bar-container"><div id="timer-bar"></div></div>
+        
+        <h3 id="quiz-question" style="margin-bottom: 15px; font-size: 1.2rem;">Pertanyaan kuis disini?</h3>
+        <div id="quiz-options"></div>
+    </div>
+
+    <!-- SCREEN 4: FINISH / APRESIASI -->
+    <div id="scr-final" class="card hidden">
+        <div style="font-size: 3.5rem; margin-bottom: 10px;">✨</div>
+        <h1 style="color: #34d399;">Mission Completed!</h1>
+        <p>Kamu berhasil melewati semua rintangan dan menyelesaikan seluruh tantangan kuis!</p>
+        
+        <div class="letter-box">
+            <p>Hai...</p>
+            <p>✨ Terimakasih ya udah mau jadi temen aku yang baik.</p>
+            <p>✨ Terimakasih udah buat aku semangat.</p>
+            <p>✨ Terimakasih udah buat aku lebih baik dari sebelumnya.</p>
+            <p style="text-align: center; font-style: italic; color: #f43f5e; font-weight: bold; margin-top: 15px; font-size: 1.05rem;">
+                Sehat-sehat selalu ya teman! 🙌
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let posX = 20;
+        let moveInterval;
+        let currentBoxIndex = null;
+        let clearedBoxes = [];
+        let timerInterval;
+        let timeLeft = 5;
+
+        // 10 Soal Berbagai Pelajaran
+        const bankSoal = [
+            { q: "What is the past tense of 'GO'?", a: ["Gone", "Went", "Goes", "Walking"], c: 1 },
+            { q: "Zat hijau daun yang berfungsi pada fotosintesis disebut...", a: ["Oksigen", "Klorofil", "Stomata", "Glukosa"], c: 1 },
+            { q: "Berapakah hasil dari $5 \\times 6 - 12$?", a: ["12", "15", "18", "20"], c: 2 },
+            { q: "Benua terbesar di dunia adalah Benua...", a: ["Afrika", "Amerika", "Asia", "Eropa"], c: 2 },
+            { q: "Simbol kimia dari air adalah...", a: ["$CO_2$", "$H_2O$", "$O_2$", "$NaCl$"], c: 1 },
+            { q: "Anindya means 'perfect' in Indonesian. It derives from...", a: ["Sanskrit", "Arabic", "Latin", "Old English"], c: 0 },
+            { q: "Planet terdekat dari Matahari adalah...", a: ["Venus", "Mars", "Merkurius", "Saturnus"], c: 2 },
+            { q: "Lagu 'Indonesia Raya' diciptakan oleh...", a: ["Ibu Sud", "W.R. Supratman", "C. Simanjuntak", "Kusbini"], c: 1 },
+            { q: "Jika $2x = 10$, berapakah nilai dari $x + 3$?", a: ["5", "8", "10", "13"], c: 1 },
+            { q: "What is the synonym of 'SMART'?", a: ["Clever", "Slow", "Lazy", "Weak"], c: 0 }
+        ];
+
+        // Generate 10 kotak di map secara otomatis
+        const world = document.getElementById('game-world');
+        for (let i = 0; i < 10; i++) {
+            let box = document.createElement('div');
+            box.className = 'box-quest';
+            box.id = `box-${i}`;
+            box.innerText = i + 1;
+            box.style.left = `${120 + (i * 85)}px`; // Pengaturan jarak antar kotak
+            world.appendChild(box);
+        }
+
+        function showScreen(id) {
+            ['scr-start', 'scr-map', 'scr-quiz', 'scr-final'].forEach(scr => {
+                document.getElementById(scr).classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function startAdventure() {
+            showScreen('scr-map');
+            window.addEventListener('keydown', handleKeyDown);
+        }
+
+        // Kendali Gerak Player
+        function handleKeyDown(e) {
+            if (document.getElementById('scr-map').classList.contains('hidden')) return;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') walk(15);
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') walk(-15);
+        }
+
+        function startMove(dir) {
+            clearInterval(moveInterval);
+            moveInterval = setInterval(() => walk(dir), 60);
+        }
+        function stopMove() { clearInterval(moveInterval); }
+
+        function walk(distance) {
+            posX += distance;
+            if (posX < 0) posX = 0;
+            if (posX > 960) posX = 960; // Batas ujung map
+            
+            const player = document.getElementById('player');
+            player.style.left = posX + 'px';
+            
+            // Auto Scroll Arena mengikuti pergerakan player
+            const arena = document.getElementById('game-arena');
+            arena.scrollLeft = posX - 100;
+
+            checkCollision();
+        }
+
+        // Cek apakah player menyentuh kotak kuis
+        function checkCollision() {
+            for (let i = 0; i < 10; i++) {
+                if (clearedBoxes.includes(i)) continue;
+                
+                let boxPos = 120 + (i * 85);
+                // Jika posisi koordinat player sejajar/dekat dengan kotak
+                if (Math.abs(posX - boxPos) < 20) {
+                    stopMove();
+                    triggerQuiz(i);
+                    break;
+                }
+            }
+        }
+
+        // Pemicu Kuis
+        function triggerQuiz(index) {
+            currentBoxIndex = index;
+            showScreen('scr-quiz');
+            
+            document.getElementById('quiz-map-info').innerText = `TANTANGAN KOTAK ${index + 1}`;
+            const soal = bankSoal[index];
+            document.getElementById('quiz-question').innerText = soal.q;
+            
+            const optContainer = document.getElementById('quiz-options');
+            optContainer.innerHTML = '';
+            
+            soal.a.forEach((opt, idx) => {
+                let b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                b.onclick = () => submitAnswer(idx);
+                optContainer.appendChild(b);
+            });
+
+            // Jalankan Timer 5 Detik
+            timeLeft = 5;
+            document.getElementById('timer-txt').innerText = timeLeft;
+            document.getElementById('timer-bar').style.width = '100%';
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu habis! Silakan coba dekati kotak ini lagi.");
+                    returnToMap();
+                } else {
+                    document.getElementById('timer-txt').innerText = Math.ceil(timeLeft);
+                    document.getElementById('timer-bar').style.width = (timeLeft / 5 * 100) + '%';
+                }
+            }, 100);
+        }
+
+        function submitAnswer(idx) {
+            clearInterval(timerInterval);
+            if (idx === bankSoal[currentBoxIndex].c) {
+                clearedBoxes.push(currentBoxIndex);
+                document.getElementById(`box-${currentBoxIndex}`).classList.add('cleared');
+                document.getElementById('prog-txt').innerText = clearedBoxes.length;
+                
+                if (clearedBoxes.length === 10) {
+                    setTimeout(() => showScreen('scr-final'), 600);
+                } else {
+                    returnToMap();
+                }
+            } else {
+                alert("Jawaban salah! Coba pelajari lagi dan sentuh kotak ini kembali.");
+                returnToMap();
+            }
+        }
+
+        function returnToMap() {
+            showScreen('scr-map');
+            // Mundurkan player sedikit agar tidak langsung auto-collision berulang
+            posX -= 30;
+            if (posX < 0) posX = 0;
+            document.getElementById('player').style.left = posX + 'px';
+        }
+    </script>
+</body>
+</html>
