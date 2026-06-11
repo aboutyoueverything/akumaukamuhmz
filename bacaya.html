@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message For You</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f7ecef, #e3d5ca);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 90%;
+            max-width: 450px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Area Karakter */
+        .stage {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .character {
+            font-size: 70px;
+            transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: absolute;
+            bottom: 10px;
+        }
+
+        .boy { left: 33%; transform: translateX(-50%); }
+        .girl { right: 33%; transform: translateX(50%); }
+
+        /* Kotak Dialog Sinematik */
+        .dialog-box {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #d4c5b9;
+            border-radius: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-style: italic;
+        }
+
+        /* Tombol Interaksi */
+        .btn-next {
+            background: #b5c99a;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(181, 201, 154, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-next:hover {
+            background: #86a373;
+            transform: translateY(-2px);
+        }
+
+        /* Efek Daun Gugur/Kenangan Sejuk */
+        .petal {
+            position: absolute;
+            color: #e8a598;
+            font-size: 14px;
+            animation: fall 3s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(200px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div class="stage" id="stage">
+            <div class="character boy" id="boy">👦🏻</div>
+            <div class="character girl" id="girl">👧🏻</div>
+        </div>
+
+        <div class="dialog-box" id="dialog-text">
+            Sebuah pesan yang barangkali tak akan pernah benar-benar tersampaikan...
+        </div>
+
+        <button class="btn-next" id="next-btn" onclick="nextStage()">Buka Pesan</button>
+    </div>
+
+    <script>
+        // Alur dialog sesuai permintaanmu
+        const cerita = [
+            { teks: "Kamu gimana kabarnya?", boyDist: "33%", girlDist: "33%" },
+            { teks: "Bahagia terus ya sama wanita cantik itu...", boyDist: "33%", girlDist: "33%" },
+            { teks: "Aku kangen kamu, btw.", boyDist: "30%", girlDist: "30%" },
+            { teks: "Asing banget ya sekarang...", boyDist: "20%", girlDist: "20%" },
+            { teks: "Yauda, sehat-sehat ya.", boyDist: "15%", girlDist: "15%" },
+            { teks: "Ngeliat kamu bahagia, aku juga bahagia. ✨", boyDist: "10%", girlDist: "10%" }
+        ];
+
+        let tahapanSaatIni = -1;
+
+        function nextStage() {
+            tahapanSaatIni++;
+            const dialogText = document.getElementById("dialog-text");
+            const btnNext = document.getElementById("next-btn");
+            const boyChar = document.getElementById("boy");
+            const girlChar = document.getElementById("girl");
+
+            if (tahapanSaatIni < cerita.length) {
+                // Jalankan efek mengetik perlahan
+                typeWriter(cerita[tahapanSaatIni].teks, dialogText);
+                
+                // Karakter perlahan bergerak menjauh secara visual sesuai alur cerita
+                boyChar.style.left = cerita[tahapanSaatIni].boyDist;
+                girlChar.style.right = cerita[tahapanSaatIni].girlDist;
+                
+                btnNext.innerText = "Lanjut";
+
+                // Efek estetik gugur di bagian akhir
+                if (tahapanSaatIni >= 3) {
+                    createPetals();
+                }
+
+                if (tahapanSaatIni === cerita.length - 1) {
+                    btnNext.innerText = "Selesai 🕊️";
+                }
+            } else {
+                // Reset kembali
+                tahapanSaatIni = -1;
+                dialogText.innerText = "Sebuah pesan yang barangkali tak akan pernah benar-benar tersampaikan...";
+                btnNext.innerText = "Buka Pesan";
+                boyChar.style.left = "33%";
+                girlChar.style.right = "33%";
+            }
+        }
+
+        // Fungsi efek mengetik (*Typing Effect*)
+        function typeWriter(text, element) {
+            element.innerText = "";
+            let i = 0;
+            clearInterval(element.timer);
+            
+            element.timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerText += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(element.timer);
+                }
+            }, 40); // kecepatan mengetik per karakter (milidetik)
+        }
+
+        // Fungsi efek guguran kelopak/daun lembut
+        function createPetals() {
+            const stage = document.getElementById("stage");
+            for (let i = 0; i < 4; i++) {
+                const petal = document.createElement("div");
+                petal.classList.add("petal");
+                petal.innerText = "🌸";
+                petal.style.left = Math.random() * 60 + 20 + "%";
+                petal.style.bottom = Math.random() * 100 + 50 + "px";
+                petal.style.animationDelay = Math.random() * 0.7 + "s";
+                stage.appendChild(petal);
+
+                setTimeout(() => {
+                    petal.remove();
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
