@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untuk Kamu ✨</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0f0c1b;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Efek Gem & Kilauan Jatuh */
+        .gem {
+            position: absolute;
+            top: -20px;
+            font-size: 20px;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* Container Utama */
+        .container {
+            width: 92%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(157, 78, 221, 0.2);
+            border-radius: 24px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(157, 78, 221, 0.25);
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        h2 {
+            font-size: 22px;
+            line-height: 1.5;
+            color: #e0aaff;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(224, 170, 255, 0.6);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tombol Interaktif */
+        .btn {
+            background: linear-gradient(45deg, #7b2cbf, #9d4edd);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(157, 78, 221, 0.5);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 25px rgba(157, 78, 221, 0.75);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Frame Video Lucu */
+        .video-wrapper {
+            display: none;
+            margin-top: 15px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #9d4edd;
+            box-shadow: 0 0 25px rgba(157, 78, 221, 0.6);
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            max-height: 70vh;
+            display: block;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gem-container"></div>
+
+    <div class="container" id="main-box">
+        <h2 id="text-display">Klik tombol di bawah ini ya... 💎</h2>
+        <button class="btn" id="next-btn" onclick="nextStage()">Klik Aku!</button>
+        
+        <div class="video-wrapper" id="video-box">
+            <video id="my-video" controls playsinline>
+                <source src="lv_7392929058507558151_20260611184913.mp4" type="video/mp4">
+                Browser kamu tidak mendukung pemutar video.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // Untaian kata-kata indah & sedihmu
+        const messages = [
+            "Hai, apa kabar? Semoga sehat terus ya... 😊",
+            "Lebih lama lagi ya hidup di dunianya... ✨",
+            "Aku udah ga milikin hati mu,",
+            "Setidaknya aku masih bisa ngelihat raga mu, dan kebahagiaan mu. 💜",
+            "Kamu inget ini ga? 👇"
+        ];
+
+        let currentStage = 0;
+        const textDisplay = document.getElementById('text-display');
+        const nextBtn = document.getElementById('next-btn');
+        const videoBox = document.getElementById('video-box');
+        const myVideo = document.getElementById('my-video');
+        const mainBox = document.getElementById('main-box');
+
+        // Generator Permata Jatuh (Biar lucu & rame)
+        function createGem() {
+            const gems = ['💎', '✨', '🔮', '💜', '⭐'];
+            const gemContainer = document.getElementById('gem-container');
+            const gem = document.createElement('div');
+            
+            gem.classList.add('gem');
+            gem.innerText = gems[Math.floor(Math.random() * gems.length)];
+            gem.style.left = Math.random() * 100 + 'vw';
+            gem.style.animationDuration = Math.random() * 2 + 3 + 's'; 
+            gem.style.opacity = Math.random() * 0.7 + 0.3;
+            gem.style.fontSize = Math.random() * 10 + 16 + 'px';
+            
+            gemContainer.appendChild(gem);
+            
+            setTimeout(() => {
+                gem.remove();
+            }, 5000);
+        }
+
+        setInterval(createGem, 150);
+
+        // Alur interaksi tombol
+        function nextStage() {
+            if (currentStage < messages.length) {
+                textDisplay.style.opacity = 0;
+                
+                setTimeout(() => {
+                    textDisplay.innerText = messages[currentStage];
+                    textDisplay.style.opacity = 1;
+                    
+                    if (currentStage === messages.length - 1) {
+                        nextBtn.innerText = "Lihat Di Sini 🎬";
+                    }
+                    currentStage++;
+                }, 250);
+
+            } else {
+                // Sembunyikan tombol biar fokus ke videonya
+                nextBtn.style.display = 'none';
+                
+                // Munculkan video box
+                videoBox.style.width = "100%";
+                videoBox.style.display = 'block';
+                
+                // Trik utama: Memutar video lewat interaksi user (pasti tembus block browser!)
+                myVideo.muted = false; 
+                
+                const playPromise = myVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Video berhasil diputar otomatis dengan suara!
+                    }).catch(error => {
+                        console.log("Autoplay dicegah, menampilkan kontrol video.");
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
